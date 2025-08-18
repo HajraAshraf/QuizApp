@@ -17,7 +17,6 @@ public class QuizController
    private final QuestionService questionService;
 
     public QuizController(QuestionService questionService) {
-
         this.questionService = questionService;
     }
     @PostMapping("/add-question")
@@ -49,6 +48,7 @@ public class QuizController
 
     @DeleteMapping("/delete-subject")
     public APIResponse deleteSubject(@RequestParam int subjectId){
+
         return questionService.deleteSubject(subjectId);
     }
     @DeleteMapping("/delete-question")

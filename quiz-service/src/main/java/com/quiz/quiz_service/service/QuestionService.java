@@ -17,5 +17,6 @@ public interface QuestionService
     APIResponse deleteSubject(int subjectId);
     APIResponse deleteQuestion(int questionId);
     APIResponse deleteOptions(OptionsId id);
-    APIResponse getAllQuestions(int subjectId);
+   // APIResponse getAllQuestions(int subjectId);
+
 }
