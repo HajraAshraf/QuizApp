@@ -12,6 +12,9 @@ import com.quiz.quiz_service.repository.QuestionRepository;
 import com.quiz.quiz_service.repository.SubjectRepository;
 import com.quiz.quiz_service.response.APIResponse;
 import com.quiz.quiz_service.service.QuestionService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +23,11 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class QuestionServiceImpl implements QuestionService
 {
+    @PersistenceContext
+    private EntityManager entityManager;
     @Autowired
     private SubjectRepository subjectRepository;
 
@@ -43,12 +49,27 @@ public class QuestionServiceImpl implements QuestionService
         questionRepository.save(question);
         return APIResponse.builder().status(200).message("Question added successfully").build();
     }
+
+
     @Override
-    public APIResponse addSubject(SubjectForm subjectForm){
-        Subject subject=subjectForm.toSubject();
-        subjectRepository.save(subject);
-        return APIResponse.builder().status(200).message("Subject added successfully").build();
+    public APIResponse addSubject(SubjectForm subjectForm) {
+        if (subjectRepository.existsById(subjectForm.getSubjectId())) {
+            return APIResponse.builder()
+                    .status(400)
+                    .message("Subject with ID " + subjectForm.getSubjectId() + " already exists")
+                    .build();
+        }
+
+        subjectRepository.save(subjectForm.toSubject()); // ✅ handles user IDs
+
+        return APIResponse.builder()
+                .status(200)
+                .message("Subject added successfully")
+                .build();
     }
+
+
+
     @Override
     public APIResponse addOptions(OptionForm optionForm){
         Options options=optionForm.toOptions();
